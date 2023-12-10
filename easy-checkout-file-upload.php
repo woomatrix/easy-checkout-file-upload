@@ -21,6 +21,11 @@
  * License URI:       http://www.gnu.org/licenses/gpl-2.0.txt
  * Update URI:        https://example.com/my-plugin/
  */
+
+ if( !defined( 'pcfme_PLUGIN_URL_file_upload' ) )
+define( 'pcfme_PLUGIN_URL_file_upload', plugin_dir_url( __FILE__ ) );
+
+
 add_filter('pcfme_override_field_types','pcfme_add_file_type_function',10,1);
 
 function pcfme_add_file_type_function($field_types) {
@@ -58,13 +63,73 @@ function pcfmefile_upload_form_field($field, $key, $args, $value) {
 			$value = "";
 		}
 
-		
+
+	$input_html =  '<style type="text/css">
+		#pcfme_file { border: 1px solid #ddd; padding: 10px; width: 100%; line-height: 30px; font-size: 13px; }
+	</style>
+	<div class="form-row form-row-wide">
+		<input type="file" id="pcfme_file" class="'.$fees_class.' input-text ' . esc_attr( implode( ' ', $args['input_class'] ) ) .'  '. pcfmeinput_conditional_class($key) .'" name="pcfme_file_field" id="' . esc_attr( $key ) . '" placeholder="' . esc_attr( $args['placeholder'] ) . '" ' . $args['maxlength'] . ' ' . $args['autocomplete'] . ' value="' . esc_attr( $value ) . '" name="pcfme_file" />
+		<input type="hidden" name="pcfme_file_field" />
+		<div id="pcfme_filelist"></div>
+	</div>';
+	
 
         $field = '<p class="form-row ' . implode( ' ', $args['class'] ) .' " id="' . $key . '_field">
             <label for="' . $key . '" class="' . implode( ' ', $args['label_class'] ) .'">' . $args['label']. $required . '</label>
-            <input type="file" class="'.$fees_class.' input-text ' . esc_attr( implode( ' ', $args['input_class'] ) ) .'  '. pcfmeinput_conditional_class($key) .'" name="' . esc_attr( $key ) . '" id="' . esc_attr( $key ) . '" placeholder="' . esc_attr( $args['placeholder'] ) . '" ' . $args['maxlength'] . ' ' . $args['autocomplete'] . ' value="' . esc_attr( $value ) . '" />
+            ' . $input_html . '
         </p>' . $after;
          
 
         return $field;
+}
+
+add_action( 'wp_ajax_pcfme_checkout_file_upload', 'pcfme_file_upload' );
+add_action( 'wp_ajax_nopriv_pcfme_checkout_file_upload', 'pcfme_file_upload' );
+function pcfme_file_upload(){
+
+	$upload_dir = wp_upload_dir();
+	$image_url = '';
+	if ( isset( $_FILES[ 'pcfme_file' ] ) ) {
+		$path = $upload_dir[ 'path' ] . '/' . basename( $_FILES[ 'pcfme_file' ][ 'name' ] );
+
+		if( move_uploaded_file( $_FILES[ 'pcfme_file' ][ 'tmp_name' ], $path ) ) {
+			$image_url = $upload_dir[ 'url' ] . '/' . basename( $_FILES[ 'pcfme_file' ][ 'name' ] );
+		}
+	}
+
+	wp_send_json( array( 'type' => 'success', 'image_url' => $image_url ) );
+}
+
+add_filter( 'wp_enqueue_scripts', 'pcfme_add_checkout_frountend_scripts' );
+
+function pcfme_add_checkout_frountend_scripts() {
+	if ( is_checkout() || is_account_page() ) {
+       wp_enqueue_script( 'pcfme_file_upload', ''.pcfme_PLUGIN_URL_file_upload.'assets/js/frontend.js' );
+	}
+}
+
+add_action( 'woocommerce_checkout_update_order_meta', 'pcfme_file_field_save_added' );
+function pcfme_file_field_save_added( $order_id ){
+
+	if( ! empty( $_POST[ 'pcfme_file_field' ] ) ) {
+		update_post_meta( $order_id, 'pcfme_file_field', sanitize_text_field( $_POST[ 'pcfme_file_field' ] ) );
+	}
+
+}
+
+add_action( 'woocommerce_checkout_process', 'pcfme_validate_new_checkout_field' );
+   function pcfme_validate_new_checkout_field() {
+   if ( empty( $_POST['pcfme_file_field'] ) ) {
+      wc_add_notice( 'Please upload your document picture', 'error' );
+   }
+}
+
+add_action( 'woocommerce_admin_order_data_after_order_details', 'pcfme_order_meta_general' );
+function pcfme_order_meta_general( $order ){
+
+	$file = get_post_meta( $order->get_id(), 'pcfme_file_field', true );
+	if( $file ) {
+		echo '<img class="cxc-order-img" style="max-width: 400px;width: 100%;height: auto; margin-top: 10px;" src="'. esc_url( $file ) .'" />';
+	}
+
 }
