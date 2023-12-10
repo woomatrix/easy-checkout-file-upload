@@ -79,6 +79,7 @@ function pcfmefile_upload_form_field($field, $key, $args, $value) {
 
 add_action( 'wp_ajax_pcfme_checkout_file_upload', 'pcfme_file_upload' );
 add_action( 'wp_ajax_nopriv_pcfme_checkout_file_upload', 'pcfme_file_upload' );
+
 function pcfme_file_upload(){
 
 	$upload_dir = wp_upload_dir();
