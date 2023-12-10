@@ -32,22 +32,42 @@ jQuery( function( $ ) {
                     	return false;
 
                     } else {
-                    	jQuery.ajax({
-						url: wc_checkout_params.ajax_url + '?action=pcfme_checkout_file_upload',
-						type: 'POST',
-						data: formData,
-						contentType: false,
-						enctype: 'multipart/form-data',
-						processData: false,
-						success: function ( response ) {
-							if( response ){
-								if( response.type == 'success' ){
+
+                    	var allowed_type = jQuery(this).attr("allowed_type");
+
+                    	var extension  = this.files[0].type;
+
+                    	extension = extension.split('/');
+
+                    	extension = extension[1];
+
+                    	if(allowed_type.indexOf(extension) != -1){
+
+                    		jQuery.ajax({
+                    			url: wc_checkout_params.ajax_url + '?action=pcfme_checkout_file_upload',
+                    			type: 'POST',
+                    			data: formData,
+                    			contentType: false,
+                    			enctype: 'multipart/form-data',
+                    			processData: false,
+                    			success: function ( response ) {
+                    				if( response ){
+                    					if( response.type == 'success' ){
 									//jQuery( '.pcfme_filelist_'+file_input_value+'' ).html( '<img src="' +  response.image_url + '">' );
-									jQuery( '.pcme_hidden_file_'+file_input_value+'' ).val( response.image_url );
-								}
-							}
-						}
-					   });
+                    						jQuery( '.pcme_hidden_file_'+file_input_value+'' ).val( response.image_url );
+                    					}
+                    				}
+                    			}
+                    		});
+
+                    	} else {
+
+                    		alert(''+pcfme_file_upload.type_allowed_text+' '+allowed_type+'');
+
+                    	}
+
+                    	
+
                     }					
 				}
 			});

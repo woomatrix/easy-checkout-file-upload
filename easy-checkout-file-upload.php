@@ -22,7 +22,8 @@
  * Update URI:        https://example.com/my-plugin/
  */
 
- if( !defined( 'pcfme_PLUGIN_URL_file_upload' ) )
+if( !defined( 'pcfme_PLUGIN_URL_file_upload' ) )
+
 define( 'pcfme_PLUGIN_URL_file_upload', plugin_dir_url( __FILE__ ) );
 
 
@@ -64,7 +65,9 @@ function pcfmefile_upload_form_field($field, $key, $args, $value) {
 		}
     $max_allowed = isset($args['max_file_size']) ? $args['max_file_size'] : 2;
 
-	$input_html =  '<div class="form-row form-row-wide"><input nkey="'.$key.'" type="file" class="pcfme_file" max_allowed="'.$max_allowed.'" id="pcfme_file_'.$key.'" name="pcfme_file_'.$key.'" /><input class="pcme_hidden_file_'.$key.'" type="hidden" name="' . $key . '" /><div class="pcfme_filelist pcfme_filelist_' . $key . '"></div>
+    $allowed_file_types = isset($args['allowed_file_types']) ? $args['allowed_file_types'] : "png,jpeg,pdf";
+
+	$input_html =  '<div class="form-row form-row-wide"><input nkey="'.$key.'" type="file" class="pcfme_file" allowed_type="'.$allowed_file_types.'" max_allowed="'.$max_allowed.'" id="pcfme_file_'.$key.'" name="pcfme_file_'.$key.'" /><input class="pcme_hidden_file_'.$key.'" type="hidden" name="' . $key . '" /><div class="pcfme_filelist pcfme_filelist_' . $key . '"></div>
 	</div>';
 	
 
@@ -74,7 +77,7 @@ function pcfmefile_upload_form_field($field, $key, $args, $value) {
         </p>' . $after;
          
 
-        return $field;
+    return $field;
 }
 
 add_action( 'wp_ajax_pcfme_checkout_file_upload', 'pcfme_file_upload' );
@@ -104,6 +107,8 @@ function pcfme_add_checkout_frountend_scripts() {
 
         $translation_array = array( 
 		        'max_allowed_text'               => esc_html__( 'Maximum size allowed for this upload is ' ,'pcfme'),
+
+		        'type_allowed_text'               => esc_html__( 'File type allowed' ,'pcfme'),
 		        
 		);
          
@@ -182,6 +187,17 @@ function pcfme_after_visibility_content_tr_function($slug,$key,$field) {
 			<?php $max_allowed = isset($field['max_file_size']) ? $field['max_file_size'] : 2; ?>
 			<input type="number" name="<?php echo $slug; ?>[<?php echo $key; ?>][max_file_size]" value="<?php echo $max_allowed; ?>">
 			<?php echo esc_html__('MB','pcfme'); ?>
+		</td>
+	</tr>
+
+	<tr class="visible_only_if_field_type_file_upload" style="<?php if (isset($field['type']) && ($field['type'] == "file_upload")) { echo 'display:table-row;'; } else { echo 'display:none;'; } ?>">
+		<td width="25%">
+			<label for="<?php echo $key; ?>_charlimit"><?php echo esc_html__('Allowed file types','pcfme'); ?></label>
+		</td>
+		<td width="75%">
+			<?php $allowed_file_types = isset($field['allowed_file_types']) ? $field['allowed_file_types'] : "png,jpeg,pdf"; ?>
+			<input type="text" name="<?php echo $slug; ?>[<?php echo $key; ?>][allowed_file_types]" value="<?php echo $allowed_file_types; ?>">
+		
 		</td>
 	</tr>
 
