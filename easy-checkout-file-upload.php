@@ -62,9 +62,9 @@ function pcfmefile_upload_form_field($field, $key, $args, $value) {
 		if ($value == "empty") {
 			$value = "";
 		}
+    $max_allowed = isset($args['max_file_size']) ? $args['max_file_size'] : 2;
 
-
-	$input_html =  '<div class="form-row form-row-wide"><input nkey="'.$key.'" type="file" class="pcfme_file" id="pcfme_file_'.$key.'" name="pcfme_file_'.$key.'" /><input class="pcme_hidden_file_'.$key.'" type="hidden" name="' . $key . '" /><div class="pcfme_filelist pcfme_filelist_' . $key . '"></div>
+	$input_html =  '<div class="form-row form-row-wide"><input nkey="'.$key.'" type="file" class="pcfme_file" max_allowed="'.$max_allowed.'" id="pcfme_file_'.$key.'" name="pcfme_file_'.$key.'" /><input class="pcme_hidden_file_'.$key.'" type="hidden" name="' . $key . '" /><div class="pcfme_filelist pcfme_filelist_' . $key . '"></div>
 	</div>';
 	
 
@@ -101,6 +101,13 @@ function pcfme_add_checkout_frountend_scripts() {
 	if ( is_checkout() || is_account_page() ) {
        wp_enqueue_script( 'pcfme_file_upload', ''.pcfme_PLUGIN_URL_file_upload.'assets/js/frontend.js',array('jquery') );
         wp_enqueue_style( 'pcfme_file_upload', ''.pcfme_PLUGIN_URL_file_upload.'assets/css/frontend.css' );
+
+        $translation_array = array( 
+		        'max_allowed_text'               => esc_html__( 'Maximum size allowed for this upload is ' ,'pcfme'),
+		        
+		);
+         
+        wp_localize_script( 'pcfme_file_upload', 'pcfme_file_upload', $translation_array );
 	}
 }
 
@@ -123,4 +130,60 @@ function pcfme_order_meta_general( $order ){
 		echo '<img class="cxc-order-img" style="max-width: 400px;width: 100%;height: auto; margin-top: 10px;" src="'. esc_url( $file ) .'" />';
 	}
 
+}
+
+add_action('admin_enqueue_scripts','pcfme_register_admin_scripts_file_upload');
+
+/*
+ * registers admin scripts via admin enqueue scripts
+ */
+function pcfme_register_admin_scripts_file_upload($hook) {
+	    global $billing_pcfmesettings_page;
+			
+		if ( $hook == $billing_pcfmesettings_page ) {
+		     
+ 
+		 
+		 
+		 
+		    
+		    wp_enqueue_script( 'pcfmeadmin-file_upload', ''.pcfme_PLUGIN_URL_file_upload.'assets/js/admin.js' , array('jquery'));
+		 
+         
+		    //wp_enqueue_style( 'pcfmeadmin', ''.pcfme_PLUGIN_URL.'assets/css/pcfmeadmin.css' );
+		    
+		 
+
+        
+		
+		 
+		    $translation_array = array( 
+		        //'removealert'               => esc_html__( 'Are you sure you want to delete?' ,'pcfme'),
+		        
+		    );
+         
+            wp_localize_script( 'pcfmeadmin-file_upload', 'pcfmeadmin-file_upload', $translation_array );
+        }
+	
+
+}
+
+add_action('pcfme_after_visibility_content_tr','pcfme_after_visibility_content_tr_function',10,3);
+
+
+function pcfme_after_visibility_content_tr_function($slug,$key,$field) {
+	?>
+
+	<tr class="visible_only_if_field_type_file_upload" style="<?php if (isset($field['type']) && ($field['type'] == "file_upload")) { echo 'display:table-row;'; } else { echo 'display:none;'; } ?>">
+		<td width="25%">
+			<label for="<?php echo $key; ?>_charlimit"><?php echo esc_html__('Max file size allowed','pcfme'); ?></label>
+		</td>
+		<td width="75%">
+			<?php $max_allowed = isset($field['max_file_size']) ? $field['max_file_size'] : 2; ?>
+			<input type="number" name="<?php echo $slug; ?>[<?php echo $key; ?>][max_file_size]" value="<?php echo $max_allowed; ?>">
+			<?php echo esc_html__('MB','pcfme'); ?>
+		</td>
+	</tr>
+
+	<?php
 }

@@ -4,12 +4,6 @@ jQuery( function( $ ) {
 
 				var file_input_value = jQuery(this).attr("nkey");
 
-				var max_allowed      = jQuery(this).attr("max_allowed");
-
-				var max_allowed_text2 =  jQuery(this).attr("max_allowed");
-
-				max_allowed          = (max_allowed * 1024) * 1024;
-
 				if ( ! this.files.length ) {
 					jQuery( '.pcfme_filelist_'+file_input_value+'' ).empty();
 				} else {
@@ -19,20 +13,13 @@ jQuery( function( $ ) {
 
 					var upload_size = this.files[0].size;
 
-					upload_size = (upload_size);
+					upload_size = (upload_size/1024);
 
 					upload_size = Math.round(upload_size);
- 
-                    if (upload_size > max_allowed) {
 
-                    	alert(''+pcfme_file_upload.max_allowed_text+' '+max_allowed_text2+' MB');
+					
 
-                    	jQuery( '.pcme_hidden_file_'+file_input_value+'' ).val("");
-
-                    	return false;
-
-                    } else {
-                    	jQuery.ajax({
+					jQuery.ajax({
 						url: wc_checkout_params.ajax_url + '?action=pcfme_checkout_file_upload',
 						type: 'POST',
 						data: formData,
@@ -47,8 +34,19 @@ jQuery( function( $ ) {
 								}
 							}
 						}
-					   });
-                    }					
+					});
 				}
+			});
+
+			jQuery(document).on('change', '.checkout_field_type', function() {
+                
+                var new_val = jQuery(this).val();
+
+                if (new_val == "file_upload") {
+                	jQuery('tr.visible_only_if_field_type_file_upload').show();
+                } else {
+                	jQuery('tr.visible_only_if_field_type_file_upload').hide();
+                }
+
 			});
 });
