@@ -1,7 +1,7 @@
 <?php
 
 /**
- * File Upload module easy checkout field editor
+ * Custom File Upload module easy checkout field editor
  *
  * @author            SysBasics
  * @copyright         2019 Your SysBasics
