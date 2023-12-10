@@ -43,9 +43,9 @@ jQuery( function( $ ) {
                 var new_val = jQuery(this).val();
 
                 if (new_val == "file_upload") {
-                	jQuery('tr.visible_only_if_field_type_file_upload').show();
+                	jQuery('tr.visible_only_if_field_type_file_upload_custom').show();
                 } else {
-                	jQuery('tr.visible_only_if_field_type_file_upload').hide();
+                	jQuery('tr.visible_only_if_field_type_file_upload_custom').hide();
                 }
 
 			});

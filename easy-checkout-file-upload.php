@@ -39,7 +39,7 @@ function pcfme_add_file_type_function_custom($field_types) {
 	return $field_types;
 }
 
-add_filter( 'woocommerce_form_field_file_upload', 'pcfmefile_upload_form_field_custom', 10, 4 );
+add_filter( 'woocommerce_form_field_file_upload_custom', 'pcfmefile_upload_form_field_custom', 10, 4 );
 
 function pcfmefile_upload_form_field_custom($field, $key, $args, $value) {
 	$key = isset($args['field_key']) ? $args['field_key'] : $key;
@@ -180,9 +180,9 @@ add_action('pcfme_after_visibility_content_tr','pcfme_after_visibility_content_t
 function pcfme_after_visibility_content_tr_function_custom($slug,$key,$field) {
 	?>
 
-	<tr class="visible_only_if_field_type_file_upload" style="<?php if (isset($field['type']) && ($field['type'] == "file_upload")) { echo 'display:table-row;'; } else { echo 'display:none;'; } ?>">
+	<tr class="visible_only_if_field_type_file_upload_custom" style="<?php if (isset($field['type']) && ($field['type'] == "file_upload_custom")) { echo 'display:table-row;'; } else { echo 'display:none;'; } ?>">
 		<td width="25%">
-			<label for="<?php echo $key; ?>_charlimit"><?php echo esc_html__('Max file size allowed','pcfme'); ?></label>
+			<label for="<?php echo $key; ?>_charlimit"><?php echo esc_html__('Max file size allowed new','pcfme'); ?></label>
 		</td>
 		<td width="75%">
 			<?php $max_allowed = isset($field['max_file_size']) ? $field['max_file_size'] : 2; ?>
@@ -191,9 +191,9 @@ function pcfme_after_visibility_content_tr_function_custom($slug,$key,$field) {
 		</td>
 	</tr>
 
-	<tr class="visible_only_if_field_type_file_upload" style="<?php if (isset($field['type']) && ($field['type'] == "file_upload")) { echo 'display:table-row;'; } else { echo 'display:none;'; } ?>">
+	<tr class="visible_only_if_field_type_file_upload_custom" style="<?php if (isset($field['type']) && ($field['type'] == "file_upload_custom")) { echo 'display:table-row;'; } else { echo 'display:none;'; } ?>">
 		<td width="25%">
-			<label for="<?php echo $key; ?>_charlimit"><?php echo esc_html__('Allowed file types','pcfme'); ?></label>
+			<label for="<?php echo $key; ?>_charlimit"><?php echo esc_html__('Allowed file types new','pcfme'); ?></label>
 		</td>
 		<td width="75%">
 			<?php $allowed_file_types = isset($field['allowed_file_types']) ? $field['allowed_file_types'] : "png,jpeg,pdf"; ?>
