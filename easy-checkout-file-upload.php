@@ -22,26 +22,26 @@
  * Update URI:        https://example.com/my-plugin/
  */
 
-if( !defined( 'pcfme_PLUGIN_URL_file_upload' ) )
+if( !defined( 'pcfme_PLUGIN_URL_file_upload_custom' ) )
 
-define( 'pcfme_PLUGIN_URL_file_upload', plugin_dir_url( __FILE__ ) );
+define( 'pcfme_PLUGIN_URL_file_upload_custom', plugin_dir_url( __FILE__ ) );
 
 
-add_filter('pcfme_override_field_types','pcfme_add_file_type_function',10,1);
+add_filter('pcfme_override_field_types','pcfme_add_file_type_function_custom',10,1);
 
-function pcfme_add_file_type_function($field_types) {
+function pcfme_add_file_type_function_custom($field_types) {
 	$field_types[] = array(
-	 		    'type'=>'file_upload',
-	 		    'text'=> __('File Upload','pcfme'),
+	 		    'type'=>'file_upload_custom',
+	 		    'text'=> __('Custom Upload','pcfme'),
 	 		    'icon'=> 'fa fa-upload'
 
 	 	    );
 	return $field_types;
 }
 
-add_filter( 'woocommerce_form_field_file_upload', 'pcfmefile_upload_form_field', 10, 4 );
+add_filter( 'woocommerce_form_field_file_upload', 'pcfmefile_upload_form_field_custom', 10, 4 );
 
-function pcfmefile_upload_form_field($field, $key, $args, $value) {
+function pcfmefile_upload_form_field_custom($field, $key, $args, $value) {
 	$key = isset($args['field_key']) ? $args['field_key'] : $key;
 
          if ( ( ! empty( $args['clear'] ) ) ) $after = '<div class="clear"></div>'; else $after = '';
@@ -80,10 +80,10 @@ function pcfmefile_upload_form_field($field, $key, $args, $value) {
     return $field;
 }
 
-add_action( 'wp_ajax_pcfme_checkout_file_upload', 'pcfme_file_upload' );
-add_action( 'wp_ajax_nopriv_pcfme_checkout_file_upload', 'pcfme_file_upload' );
+add_action( 'wp_ajax_pcfme_checkout_file_upload', 'pcfme_file_upload_custom' );
+add_action( 'wp_ajax_nopriv_pcfme_checkout_file_upload', 'pcfme_file_upload_custom' );
 
-function pcfme_file_upload(){
+function pcfme_file_upload_custom(){
 
 	$upload_dir = wp_upload_dir();
 	$image_url = '';
@@ -98,9 +98,9 @@ function pcfme_file_upload(){
 	wp_send_json( array( 'type' => 'success', 'image_url' => $image_url ) );
 }
 
-add_filter( 'wp_enqueue_scripts', 'pcfme_add_checkout_frountend_scripts' );
+add_filter( 'wp_enqueue_scripts', 'pcfme_add_checkout_frountend_scripts_custom' );
 
-function pcfme_add_checkout_frountend_scripts() {
+function pcfme_add_checkout_frountend_scripts_custom() {
 	if ( is_checkout() || is_account_page() ) {
        wp_enqueue_script( 'pcfme_file_upload', ''.pcfme_PLUGIN_URL_file_upload.'assets/js/frontend.js',array('jquery') );
         wp_enqueue_style( 'pcfme_file_upload', ''.pcfme_PLUGIN_URL_file_upload.'assets/css/frontend.css' );
@@ -116,8 +116,8 @@ function pcfme_add_checkout_frountend_scripts() {
 	}
 }
 
-add_action( 'woocommerce_checkout_update_order_meta', 'pcfme_file_field_save_added' );
-function pcfme_file_field_save_added( $order_id ){
+add_action( 'woocommerce_checkout_update_order_meta', 'pcfme_file_field_save_added_custom' );
+function pcfme_file_field_save_added_custom( $order_id ){
 
 	if( ! empty( $_POST[ 'pcfme_file_field' ] ) ) {
 		update_post_meta( $order_id, 'pcfme_file_field', sanitize_text_field( $_POST[ 'pcfme_file_field' ] ) );
@@ -127,8 +127,9 @@ function pcfme_file_field_save_added( $order_id ){
 
 
 
-add_action( 'woocommerce_admin_order_data_after_order_details', 'pcfme_order_meta_general' );
-function pcfme_order_meta_general( $order ){
+add_action( 'woocommerce_admin_order_data_after_order_details', 'pcfme_order_meta_general_custom' );
+
+function pcfme_order_meta_general_custom( $order ){
 
 	$file = get_post_meta( $order->get_id(), 'pcfme_file_field', true );
 	if( $file ) {
@@ -137,12 +138,12 @@ function pcfme_order_meta_general( $order ){
 
 }
 
-add_action('admin_enqueue_scripts','pcfme_register_admin_scripts_file_upload');
+add_action('admin_enqueue_scripts','pcfme_register_admin_scripts_file_upload_custom');
 
 /*
  * registers admin scripts via admin enqueue scripts
  */
-function pcfme_register_admin_scripts_file_upload($hook) {
+function pcfme_register_admin_scripts_file_upload_custom($hook) {
 	    global $billing_pcfmesettings_page;
 			
 		if ( $hook == $billing_pcfmesettings_page ) {
@@ -173,10 +174,10 @@ function pcfme_register_admin_scripts_file_upload($hook) {
 
 }
 
-add_action('pcfme_after_visibility_content_tr','pcfme_after_visibility_content_tr_function',10,3);
+add_action('pcfme_after_visibility_content_tr','pcfme_after_visibility_content_tr_function_custom',10,3);
 
 
-function pcfme_after_visibility_content_tr_function($slug,$key,$field) {
+function pcfme_after_visibility_content_tr_function_custom($slug,$key,$field) {
 	?>
 
 	<tr class="visible_only_if_field_type_file_upload" style="<?php if (isset($field['type']) && ($field['type'] == "file_upload")) { echo 'display:table-row;'; } else { echo 'display:none;'; } ?>">
