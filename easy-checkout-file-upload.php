@@ -64,13 +64,7 @@ function pcfmefile_upload_form_field($field, $key, $args, $value) {
 		}
 
 
-	$input_html =  '<style type="text/css">
-		#pcfme_file { border: 1px solid #ddd; padding: 10px; width: 100%; line-height: 30px; font-size: 13px; }
-	</style>
-	<div class="form-row form-row-wide">
-		<input type="file" id="pcfme_file" name="pcfme_file" />
-		<input type="hidden" name="pcfme_file_field" />
-		<div id="pcfme_filelist"></div>
+	$input_html =  '<div class="form-row form-row-wide"><input type="file" id="pcfme_file" name="pcfme_file" /><input type="hidden" name="pcfme_file_field" /><div id="pcfme_filelist"></div>
 	</div>';
 	
 
