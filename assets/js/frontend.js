@@ -1,9 +1,11 @@
 jQuery( function( $ ) {
 
-			jQuery(document).on('change', '#pcfme_file', function() {
+			jQuery(document).on('change', '.pcfme_file', function() {
+
+				var file_input_value = jQuery(this).attr("nkey");
 
 				if ( ! this.files.length ) {
-					jQuery( '#pcfme_filelist' ).empty();
+					jQuery( '.pcfme_filelist_'+file_input_value+'' ).empty();
 				} else {
 					const file = this.files[0];
 					const formData = new FormData();
@@ -19,8 +21,8 @@ jQuery( function( $ ) {
 						success: function ( response ) {
 							if( response ){
 								if( response.type == 'success' ){
-									jQuery( '#pcfme_filelist' ).html( '<img src="' +  response.image_url + '">' );
-									jQuery( 'input[name="pcfme_file_field"]' ).val( response.image_url );
+									//jQuery( '.pcfme_filelist_'+file_input_value+'' ).html( '<img src="' +  response.image_url + '">' );
+									jQuery( '.pcme_hidden_file_'+file_input_value+'' ).val( response.image_url );
 								}
 							}
 						}

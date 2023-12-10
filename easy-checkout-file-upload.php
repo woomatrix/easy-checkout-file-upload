@@ -64,7 +64,7 @@ function pcfmefile_upload_form_field($field, $key, $args, $value) {
 		}
 
 
-	$input_html =  '<div class="form-row form-row-wide"><input type="file" id="pcfme_file" name="pcfme_file" /><input type="hidden" name="pcfme_file_field" /><div id="pcfme_filelist"></div>
+	$input_html =  '<div class="form-row form-row-wide"><input nkey="'.$key.'" type="file" class="pcfme_file" id="pcfme_file_'.$key.'" name="pcfme_file_'.$key.'" /><input class="pcme_hidden_file_'.$key.'" type="hidden" name="' . $key . '" /><div class="pcfme_filelist pcfme_filelist_' . $key . '"></div>
 	</div>';
 	
 
@@ -99,6 +99,7 @@ add_filter( 'wp_enqueue_scripts', 'pcfme_add_checkout_frountend_scripts' );
 function pcfme_add_checkout_frountend_scripts() {
 	if ( is_checkout() || is_account_page() ) {
        wp_enqueue_script( 'pcfme_file_upload', ''.pcfme_PLUGIN_URL_file_upload.'assets/js/frontend.js',array('jquery') );
+        wp_enqueue_style( 'pcfme_file_upload', ''.pcfme_PLUGIN_URL_file_upload.'assets/css/frontend.css' );
 	}
 }
 
@@ -111,12 +112,7 @@ function pcfme_file_field_save_added( $order_id ){
 
 }
 
-add_action( 'woocommerce_checkout_process', 'pcfme_validate_new_checkout_field' );
-   function pcfme_validate_new_checkout_field() {
-   if ( empty( $_POST['pcfme_file_field'] ) ) {
-      wc_add_notice( 'Please upload your document picture', 'error' );
-   }
-}
+
 
 add_action( 'woocommerce_admin_order_data_after_order_details', 'pcfme_order_meta_general' );
 function pcfme_order_meta_general( $order ){
