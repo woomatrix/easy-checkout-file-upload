@@ -7,4 +7,5 @@ WooCommerce Easy Checkout Field Editor
 WooCommerce easy checkout field editor comes with following hooks which can be used to extend functionality in frontend and backend. 
 
 pcfme_override_field_types - to add new field type to existing field types
+
 pcfme_after_visibility_content_tr - add custom field type option field to be shown after visibility dropdown
