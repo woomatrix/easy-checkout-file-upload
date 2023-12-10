@@ -68,7 +68,7 @@ function pcfmefile_upload_form_field($field, $key, $args, $value) {
 		#pcfme_file { border: 1px solid #ddd; padding: 10px; width: 100%; line-height: 30px; font-size: 13px; }
 	</style>
 	<div class="form-row form-row-wide">
-		<input type="file" id="pcfme_file" class="'.$fees_class.' input-text ' . esc_attr( implode( ' ', $args['input_class'] ) ) .'  '. pcfmeinput_conditional_class($key) .'" name="pcfme_file_field" id="' . esc_attr( $key ) . '" placeholder="' . esc_attr( $args['placeholder'] ) . '" ' . $args['maxlength'] . ' ' . $args['autocomplete'] . ' value="' . esc_attr( $value ) . '" name="pcfme_file" />
+		<input type="file" id="pcfme_file" name="pcfme_file" />
 		<input type="hidden" name="pcfme_file_field" />
 		<div id="pcfme_filelist"></div>
 	</div>';
@@ -104,7 +104,7 @@ add_filter( 'wp_enqueue_scripts', 'pcfme_add_checkout_frountend_scripts' );
 
 function pcfme_add_checkout_frountend_scripts() {
 	if ( is_checkout() || is_account_page() ) {
-       wp_enqueue_script( 'pcfme_file_upload', ''.pcfme_PLUGIN_URL_file_upload.'assets/js/frontend.js' );
+       wp_enqueue_script( 'pcfme_file_upload', ''.pcfme_PLUGIN_URL_file_upload.'assets/js/frontend.js',array('jquery') );
 	}
 }
 
